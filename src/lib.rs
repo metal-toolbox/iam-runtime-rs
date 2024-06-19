@@ -1,2 +1,2 @@
 #[path = "runtime.iam.v1.rs"]
-pub mod client;
+pub mod iam_runtime;
