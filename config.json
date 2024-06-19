@@ -1,0 +1,3 @@
+{
+	"dl": "https://github.com/equinixmetal/{crate}/releases/download/v{version}/{crate}-{version}.crate"
+}
