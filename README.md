@@ -2,11 +2,22 @@
 
 Crate containing runtime client generated from [`iam-runtime` protos][protos].
 
+This repo also serves as the registry for the crate, for now.
+
+### Regenerate the client
+
+When there is a new version of [`iam-runtime`][iamr]:
+
+1. Copy the [`authentication.proto`][authn] and [`authorization.proto`][authz]
+	files to the [`proto`](./proto) directory.
+
+1. Update the version in [`Cargo.toml`][toml] to match.
+
+1. Run `cargo build`.
+
 ### Create a new version
 
-1. Check the latest tag in [releases][releases].
-
-1. Update the version to the next one in [`Cargo.toml`][toml].
+After updating the `iam-runtime` protos:
 
 1. Install [`cargo index`][c-index].
 
@@ -30,9 +41,17 @@ Crate containing runtime client generated from [`iam-runtime` protos][protos].
 	 to create the tag. Attache the `target/package/iam-runtime-rs-<version>.crate`
 	 file, and click Publish.
 
+### TODO
+
+- [ ] Automate regenerating the client whenever a new iam-runtime version is
+	released.
+- [ ] Automate releasing new crates.
 
 [protos]: https://github.com/metal-toolbox/iam-runtime/tree/main/proto
 [c-index]: https://github.com/ehuss/cargo-index
 [crate]: ./ia/m-/iam-runtime-rs
 [releases]: https://github.com/equinixmetal/iam-runtime-rs/releases
 [toml]: ./Cargo.toml
+[iamr]: https://github.com/metal-toolbox/iam-runtime
+[authn]: https://github.com/metal-toolbox/iam-runtime/blob/main/proto/authentication/authentication.proto
+[authz]: https://github.com/metal-toolbox/iam-runtime/blob/main/proto/authorization/authorization.proto
