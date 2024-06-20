@@ -29,3 +29,4 @@ jobs:
         with:
           commit-message: Generate for v${{ inputs.version }}
           title: Generate for v${{ inputs.version }}
+          branch: generate-v${{ inputs.version }}
