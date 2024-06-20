@@ -31,12 +31,12 @@ If the workflow does not work, you can publish the crate manually
 	 will not be able to do the next steps._
 
 1. Login locally:
-	```
+	```sh
 	cargo login
 	# paste in your key when prompted
 	```
 
-1. Run `make release`.
+1. Run `make publish`.
 		This will:
 
 	- Do a dry run of the crates.io publish
