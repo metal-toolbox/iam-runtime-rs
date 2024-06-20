@@ -842,12 +842,7 @@ pub mod authorization_server {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct GetAccessTokenRequest {
-    /// Token is the literal token for a subject (such as a bearer token) passed to the
-    /// application with no transformations applied.
-    #[prost(string, tag = "1")]
-    pub token: ::prost::alloc::string::String,
-}
+pub struct GetAccessTokenRequest {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetAccessTokenResponse {
