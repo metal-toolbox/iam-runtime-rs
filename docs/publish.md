@@ -1,6 +1,24 @@
 ## Prepare a new crate version
 
-When there is a new version of [`iam-runtime`][iamr]:
+When there is a new version of [`iam-runtime`][iamr] navigate to the `Action` tab in Github. Select the `Bump version`
+workflow. On the right-hand side, select `Run workflow`. Enter the `iam-runtime`
+version you want to generate code for **without the `v` prefix** (eg: `0.4.0`).
+The action will fetch the protos for that version, build the code and open a
+PR.
+
+When the action completes, review and merge the PR. After that you can trigger
+the `Publish workflow.
+
+## Publish a new crate
+
+After merging, navigate to the `Action` tab in Github. Select the `publish`
+workflow. On the right-hand side, select `Run workflow`. This will publish a
+new crate. Verify that a new one exists on [crates.io][crate] after the task has
+run.
+
+## Manual alternative
+
+If either of the workflows do not work, here are the manual steps:
 
 1. Export the new version:
 	```
@@ -15,17 +33,6 @@ When there is a new version of [`iam-runtime`][iamr]:
 	- Check that everything builds.
 
 1. Commit and push your changes.
-
-## Publish a new crate
-
-After merging, navigate to the `Action` tab in Github. Select the `publish`
-workflow. On the right-hand side, select `Run workflow`. This will publish a
-new crate. Verify that a new one exists on [crates.io][crate] after the task has
-run.
-
-### Manual alternative
-
-If the workflow does not work, you can publish the crate manually
 
 1. Get an API key from crates.io. _If you are not a member of an owning team you
 	 will not be able to do the next steps._
@@ -44,12 +51,9 @@ If the workflow does not work, you can publish the crate manually
 
 1. Check the crate has been updated on crates.io
 
-1. Push your changes.
-
 ### TODO
 
-- [ ] Automate regenerating whenever a new iam-runtime version is released,
-	should open a new PR with that commit above.
+- [ ] Automate the PR workflow whenever a new iam-runtime version is released
 - [ ] Remove the manual step of publishing
 
 [proto]: https://github.com/metal-toolbox/iam-runtime/tree/main/proto
