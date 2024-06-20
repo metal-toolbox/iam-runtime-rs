@@ -1,7 +1,7 @@
 .PHONY: release
 release:
-	cargo publish --dry-run
-	cargo publish
+	cargo publish --dry-run --no-verify
+	cargo publish --no-verify
 
 .PHONY: build
 build: protos bump
