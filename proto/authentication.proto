@@ -13,7 +13,7 @@ message Subject {
   google.protobuf.Struct claims = 2;
 }
 
-service Authentication {
+service Authentication { 
   rpc ValidateCredential(ValidateCredentialRequest)
     returns (ValidateCredentialResponse) {}
 }
