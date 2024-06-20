@@ -1,6 +1,6 @@
 [package]
 name = "iam-runtime-rs"
-version = "0.4.1"
+version = "0.4.0"
 edition = "2021"
 description = "Generated protobufs for integrating with and implementing iam-runtime services"
 license = "Apache-2.0"
