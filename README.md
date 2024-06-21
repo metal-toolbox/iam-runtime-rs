@@ -1,61 +1,73 @@
-## iam-runtime-rs
+There are 2 crates in this repo: `builder` and `iam-runtime`.
 
-Crate containing generated protobufs from [`iam-runtime`][iamr] [protos][protos].
+The `builder` is there to generate the protobuf code. It is not published. The
+generated code ends up in `iam-runtime` which is published as the
+`iam-runtime-rs` crate.
 
-### Example:
+We separate it like this so that `iam-runtime-rs` does not need to be
+responsible for building itself, meaning crates which depend on `iam-runtime-rs`
+do not need to have `protoc` installed.
 
-```rust
-use anyhow::{Error, Result};
-use tokio::net::UnixStream;
-use tonic::transport::{Endpoint, Uri};
-use tower::service_fn;
+## Prepare a new crate version
 
-use iam_runtime_rs::iam_runtime::{
-    authentication_client::AuthenticationClient, authorization_client::AuthorizationClient,
-    AccessRequestAction, CheckAccessRequest, ValidateCredentialRequest,
-};
+When there is a new version of [`iam-runtime`][iamr] navigate to the `Action` tab in Github. Select the `Bump version`
+workflow. On the right-hand side, select `Run workflow`. Enter the `iam-runtime`
+version you want to generate code for **without the `v` prefix** (eg: `0.4.0`).
+The action will fetch the protos for that version, build the code and open a
+PR.
 
-async fn do_auth(token: String) -> Result<(), Error> {
-    let channel = Endpoint::try_from(format!("http://[::]:50051/{}", "/tmp/iam_runtime.sock"))?
-        .connect_with_connector(service_fn(|u: Uri| {
-            UnixStream::connect(String::from(u.path()))
-        }))
-        .await?;
+When the action completes, review and merge the PR. After that you can trigger
+the `Publish workflow.
 
-    let mut authn_client = AuthenticationClient::new(channel.clone());
-    let mut authz_client = AuthorizationClient::new(channel);
+## Publish a new crate
 
-    let request = tonic::Request::new(ValidateCredentialRequest {
-        credential: token.clone(),
-    });
+After merging, navigate to the `Action` tab in Github. Select the `publish`
+workflow. On the right-hand side, select `Run workflow`. This will publish a
+new crate. Verify that a new one exists on [crates.io][crate] after the task has
+run.
 
-    let resp = authn_client
-        .validate_credential(request)
-        .await?
-        .into_inner();
+## Manual alternative
 
-    if resp.result == 1 {
-        return Err(Error::msg("invalid token"));
-    };
+If either of the workflows do not work, here are the manual steps:
 
-    let action = AccessRequestAction {
-        action: String::from("some-action"),
-        resource_id: String::from("some-resource"),
-    };
+1. Export the new version:
+	```
+	export VERSION=0.0.0
+	```
+1. Run `make build`
+		This will:
 
-    let request = tonic::Request::new(CheckAccessRequest {
-        credential: token,
-        actions: vec![action],
-    });
+	- Fetch the [proto definitions][proto] from `iam-runtime`, put them in
+		./builder/proto.
+	- Bump the version number in [`Cargo.toml`][toml].
+	- Generate the protobuf code.
+	- Check that everything builds.
 
-    let resp = authz_client.check_access(request).await?.into_inner();
-    if resp.result == 1 {
-        return Err(Error::msg("access denied"));
-    }
+1. Commit and push your changes.
 
-    Ok(())
-}
-```
+1. Get an API key from crates.io. _If you are not a member of an owning team you
+	 will not be able to do the next steps._
 
+1. Login locally:
+	```sh
+	cargo login
+	# paste in your key when prompted
+	```
+
+1. Run `make publish`.
+		This will:
+
+	- Do a dry run of the crates.io publish
+	- Publish the actual crate.
+
+1. Check the crate has been updated on crates.io
+
+### TODO
+
+- [ ] Automate the PR workflow whenever a new iam-runtime version is released
+- [ ] Remove the manual step of publishing
+
+[proto]: https://github.com/metal-toolbox/iam-runtime/tree/main/proto
+[toml]: ./Cargo.toml
 [iamr]: https://github.com/metal-toolbox/iam-runtime
-[protos]: https://github.com/metal-toolbox/iam-runtime/tree/main/proto
+[crate]: https://crates.io/crates/iam-runtime-rs

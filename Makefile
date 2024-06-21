@@ -1,7 +1,7 @@
 .PHONY: publish
 publish:
-	cargo publish --dry-run --no-verify
-	cargo publish --no-verify
+	cargo publish -p iam-runtime-rs --dry-run --no-verify
+	cargo publish -p iam-runtime-rs --no-verify
 
 .PHONY: build
 build: protos bump

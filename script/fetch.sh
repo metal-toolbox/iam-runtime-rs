@@ -7,9 +7,9 @@ fi
 
 BASE=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT="${BASE%/*}"
-TARGET="$ROOT/proto"
+TARGET="$ROOT/builder/proto"
 
-rm proto/a* proto/i* &>/dev/null
+rm "$TARGET"/a* "$TARGET"/i* &>/dev/null
 
 download() {
 	local source="$1"

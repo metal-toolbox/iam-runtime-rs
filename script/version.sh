@@ -6,11 +6,12 @@ if [ -z "$VERSION" ]; then
 fi
 
 PLATFORM=$(uname)
+FILE=iam-runtime/Cargo.toml
 
 if [[ "$PLATFORM" == "Linux" ]]; then
-	sed -i "s/^version .*$/version = \"$VERSION\"/" Cargo.toml
+	sed -i "s/^version .*$/version = \"$VERSION\"/" "$FILE"
 elif [[ "$PLATFORM" == "Darwin" ]]; then
-	sed -i "s/^version .*$/version = \"$VERSION\"/" Cargo.toml
+	sed -i "s/^version .*$/version = \"$VERSION\"/" "$FILE"
 else
 	echo "unknown platform: $PLATFORM"
 	exit 1

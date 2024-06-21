@@ -1,0 +1,7 @@
+[package]
+name = "builder"
+description = "Proto builder for iam-runtime-rs"
+publish = false
+
+[build-dependencies]
+tonic-build = "0.11.0"

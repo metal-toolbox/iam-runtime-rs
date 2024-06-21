@@ -1,1 +1,3 @@
 /target
+/builder/proto/auth*
+/builder/proto/id*
