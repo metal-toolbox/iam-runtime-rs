@@ -1,8 +1,8 @@
 #!/bin/bash -ex
 
 upstream_release() {
-    curl -s
-    "https://api.github.com/repos/metal-toolbox/iam-runtime/releases/latest" \
+    curl -s \
+        "https://api.github.com/repos/metal-toolbox/iam-runtime/releases/latest" \
         | awk -F'"' '/tag_name/ {printf $4}'
 }
 
