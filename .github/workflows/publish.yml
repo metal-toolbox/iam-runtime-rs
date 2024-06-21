@@ -1,5 +1,7 @@
 name: Publish
 
+# this can probably be run whenever main is pushed
+# if there is no new version then nothing will happen
 on:
   workflow_dispatch: {}
 
