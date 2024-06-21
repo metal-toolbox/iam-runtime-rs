@@ -10,18 +10,20 @@ do not need to have `protoc` installed.
 
 ## Prepare a new crate version
 
-When there is a new version of [`iam-runtime`][iamr] navigate to the `Action` tab in Github. Select the `Bump version`
-workflow. On the right-hand side, select `Run workflow`. Enter the `iam-runtime`
-version you want to generate code for **without the `v` prefix** (eg: `0.4.0`).
-The action will fetch the protos for that version, build the code and open a
-PR.
+There is a Github Action which will run once a week to automatically bump the
+version if there is a new version of [`iam-runtime`][iamr].
+
+If you would like to trigger a bump ahead of schedule, navigate to the `Action`
+tab in Github. Select the `Bump version` workflow. On the right-hand side,
+select `Run workflow`.The action will check whether a new version exists on
+`iam-runtim`, fetch the protos for that version, build the code and open a PR.
 
 When the action completes, review and merge the PR. After that you can trigger
-the `Publish workflow.
+the `Publish` workflow.
 
 ## Publish a new crate
 
-After merging, navigate to the `Action` tab in Github. Select the `publish`
+After merging, navigate to the `Action` tab in Github. Select the `Publish`
 workflow. On the right-hand side, select `Run workflow`. This will publish a
 new crate. Verify that a new one exists on [crates.io][crate] after the task has
 run.
