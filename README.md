@@ -64,7 +64,7 @@ If either of the workflows do not work, here are the manual steps:
 
 ### TODO
 
-- [ ] Automate the PR workflow whenever a new iam-runtime version is released
+- [x] Automate the PR workflow whenever a new iam-runtime version is released
 - [ ] Remove the manual step of publishing
 
 [proto]: https://github.com/metal-toolbox/iam-runtime/tree/main/proto
