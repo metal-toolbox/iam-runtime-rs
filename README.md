@@ -32,10 +32,13 @@ run.
 
 If either of the workflows do not work, here are the manual steps:
 
-1. Export the new version:
+1. Update the version of the iam-runtime in `iam_runtime_version.txt`:
 	```
-	export VERSION=0.0.0
+	echo -e "v0.0.0" > iam_runtime_version.txt
 	```
+ 
+1. Update the version of the crate in `iam-runtime/Cargo.toml`
+ 
 1. Run `make build`
 		This will:
 

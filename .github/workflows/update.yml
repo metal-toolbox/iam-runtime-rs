@@ -11,26 +11,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - name: Should bump?
+      - name: Check for newer iam-runtime version
         run: |
-          new_version=$(./script/bump.sh)
+          new_version=$(./script/get_newer_version.sh)
           if [[ "$new_version" == "" ]]; then
-            echo "No new iam-runtime release. Nothing to do. (this is not an error, no worries.)"
+            echo "No new iam-runtime release. Nothing to do."
           fi
 
           echo 'NEW_VERSION<<EOF' >> $GITHUB_ENV
           echo "${new_version}" >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
-      - name: Bump version
+      - name: Update iam-runtime proto
         if: ${{ env.NEW_VERSION != '' }}
         env:
-          VERSION: ${{ env.NEW_VERSION }}
+          NEW_VERSION: ${{ env.NEW_VERSION }}
         run: |
           wget -P /tmp/protoc https://github.com/protocolbuffers/protobuf/releases/download/v26.1/protoc-26.1-linux-x86_64.zip && \
             unzip /tmp/protoc/protoc-26.1-linux-x86_64.zip -d /tmp/protoc && \
             sudo mv /tmp/protoc/bin/protoc /usr/bin/ && \
             sudo mv /tmp/protoc/include/google /usr/include/
+          echo -e "$NEW_VERSION" > iam_runtime_version.txt
           make build
       - name: Create Pull Request
         if: ${{ env.NEW_VERSION != '' }}
@@ -38,9 +39,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commit-message: Generate for v${{ env.NEW_VERSION }}
-          title: Generate for v${{ env.NEW_VERSION }}
-          branch: generate-v${{ env.NEW_VERSION }}
+          commit-message: Generate for ${{ env.NEW_VERSION }}
+          title: Generate for ${{ env.NEW_VERSION }}
+          branch: generate-${{ env.NEW_VERSION }}
           reviewers: coffeefreak101
           body: |
             Generate protobuf code for ${{ env.NEW_VERSION }}.
