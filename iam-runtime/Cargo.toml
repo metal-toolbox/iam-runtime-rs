@@ -1,6 +1,6 @@
 [package]
 name = "iam-runtime-rs"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
 description = "Generated protobufs for integrating with and implementing iam-runtime services"
 license = "Apache-2.0"
@@ -9,4 +9,4 @@ repository = "https://github.com/metal-toolbox/iam-runtime-rs"
 [dependencies]
 prost = "0.13.3"
 prost-types = "0.13.3"
-tonic = "0.12.2"
+tonic = "0.13.0"
