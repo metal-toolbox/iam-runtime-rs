@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build_client(true)
         .build_server(true)
         .out_dir("../iam-runtime/src")
-        .compile(
+        .compile_protos(
             &[authn_proto_file, authz_proto_file, identity_proto_file],
             &["proto"],
         )?;
