@@ -9,4 +9,4 @@ repository = "https://github.com/metal-toolbox/iam-runtime-rs"
 [dependencies]
 prost = "0.13.3"
 prost-types = "0.13.3"
-tonic = "0.13.0"
+tonic = "0.14.0"
