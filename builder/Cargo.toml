@@ -4,4 +4,4 @@ description = "Proto builder for iam-runtime-rs"
 publish = false
 
 [build-dependencies]
-tonic-build = "0.13.0"
+tonic-prost-build = "0.14"

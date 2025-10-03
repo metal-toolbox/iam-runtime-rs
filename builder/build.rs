@@ -7,7 +7,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let authz_proto_file = "./proto/authorization.proto";
     let identity_proto_file = "./proto/identity.proto";
 
-    tonic_build::configure()
+    tonic_prost_build::configure()
         .protoc_arg("--experimental_allow_proto3_optional")
         .build_client(true)
         .build_server(true)

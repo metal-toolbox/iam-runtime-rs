@@ -8,7 +8,7 @@ pub struct Subject {
     #[prost(message, optional, tag = "2")]
     pub claims: ::core::option::Option<::prost_types::Struct>,
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ValidateCredentialRequest {
     /// credential is the literal credential for a subject (such as a bearer token) passed to the
     /// application with no transformations applied.
@@ -29,7 +29,17 @@ pub struct ValidateCredentialResponse {
 }
 /// Nested message and enum types in `ValidateCredentialResponse`.
 pub mod validate_credential_response {
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Result {
         Valid = 0,
@@ -63,10 +73,10 @@ pub mod authentication_client {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct AuthenticationClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -110,8 +120,9 @@ pub mod authentication_client {
                     <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
-                Into<StdError> + std::marker::Send + std::marker::Sync,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::Body>,
+            >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             AuthenticationClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -149,20 +160,30 @@ pub mod authentication_client {
         pub async fn validate_credential(
             &mut self,
             request: impl tonic::IntoRequest<super::ValidateCredentialRequest>,
-        ) -> std::result::Result<tonic::Response<super::ValidateCredentialResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
+        ) -> std::result::Result<
+            tonic::Response<super::ValidateCredentialResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/runtime.iam.v1.Authentication/ValidateCredential",
             );
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "runtime.iam.v1.Authentication",
-                "ValidateCredential",
-            ));
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "runtime.iam.v1.Authentication",
+                        "ValidateCredential",
+                    ),
+                );
             self.inner.unary(req, path, codec).await
         }
     }
@@ -174,7 +195,7 @@ pub mod authentication_server {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
     use tonic::codegen::*;
     /// Generated trait containing gRPC methods that should be implemented for use with AuthenticationServer.
@@ -183,7 +204,10 @@ pub mod authentication_server {
         async fn validate_credential(
             &self,
             request: tonic::Request<super::ValidateCredentialRequest>,
-        ) -> std::result::Result<tonic::Response<super::ValidateCredentialResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::ValidateCredentialResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct AuthenticationServer<T> {
@@ -206,7 +230,10 @@ pub mod authentication_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -261,19 +288,23 @@ pub mod authentication_server {
                 "/runtime.iam.v1.Authentication/ValidateCredential" => {
                     #[allow(non_camel_case_types)]
                     struct ValidateCredentialSvc<T: Authentication>(pub Arc<T>);
-                    impl<T: Authentication>
-                        tonic::server::UnaryService<super::ValidateCredentialRequest>
-                        for ValidateCredentialSvc<T>
-                    {
+                    impl<
+                        T: Authentication,
+                    > tonic::server::UnaryService<super::ValidateCredentialRequest>
+                    for ValidateCredentialSvc<T> {
                         type Response = super::ValidateCredentialResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::ValidateCredentialRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as Authentication>::validate_credential(&inner, request).await
+                                <T as Authentication>::validate_credential(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -285,7 +316,7 @@ pub mod authentication_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = ValidateCredentialSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -300,19 +331,25 @@ pub mod authentication_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    let mut response = http::Response::new(tonic::body::Body::default());
-                    let headers = response.headers_mut();
-                    headers.insert(
-                        tonic::Status::GRPC_STATUS,
-                        (tonic::Code::Unimplemented as i32).into(),
-                    );
-                    headers.insert(
-                        http::header::CONTENT_TYPE,
-                        tonic::metadata::GRPC_CONTENT_TYPE,
-                    );
-                    Ok(response)
-                }),
+                _ => {
+                    Box::pin(async move {
+                        let mut response = http::Response::new(
+                            tonic::body::Body::default(),
+                        );
+                        let headers = response.headers_mut();
+                        headers
+                            .insert(
+                                tonic::Status::GRPC_STATUS,
+                                (tonic::Code::Unimplemented as i32).into(),
+                            );
+                        headers
+                            .insert(
+                                http::header::CONTENT_TYPE,
+                                tonic::metadata::GRPC_CONTENT_TYPE,
+                            );
+                        Ok(response)
+                    })
+                }
             }
         }
     }
@@ -334,7 +371,7 @@ pub mod authentication_server {
         const NAME: &'static str = SERVICE_NAME;
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Relationship {
     /// relation is the name of the relationship between two resources.
     #[prost(string, tag = "1")]
@@ -343,7 +380,7 @@ pub struct Relationship {
     #[prost(string, tag = "2")]
     pub subject_id: ::prost::alloc::string::String,
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct AccessRequestAction {
     /// action is the name of the action the subject is attempting to perform an action on.
     #[prost(string, tag = "1")]
@@ -363,14 +400,24 @@ pub struct CheckAccessRequest {
     #[prost(message, repeated, tag = "2")]
     pub actions: ::prost::alloc::vec::Vec<AccessRequestAction>,
 }
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct CheckAccessResponse {
     #[prost(enumeration = "check_access_response::Result", tag = "1")]
     pub result: i32,
 }
 /// Nested message and enum types in `CheckAccessResponse`.
 pub mod check_access_response {
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Result {
         Allowed = 0,
@@ -406,7 +453,7 @@ pub struct CreateRelationshipsRequest {
     #[prost(message, repeated, tag = "2")]
     pub relationships: ::prost::alloc::vec::Vec<Relationship>,
 }
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct CreateRelationshipsResponse {}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteRelationshipsRequest {
@@ -417,7 +464,7 @@ pub struct DeleteRelationshipsRequest {
     #[prost(message, repeated, tag = "2")]
     pub relationships: ::prost::alloc::vec::Vec<Relationship>,
 }
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct DeleteRelationshipsResponse {}
 /// Generated client implementations.
 pub mod authorization_client {
@@ -426,10 +473,10 @@ pub mod authorization_client {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct AuthorizationClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -473,8 +520,9 @@ pub mod authorization_client {
                     <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
-                Into<StdError> + std::marker::Send + std::marker::Sync,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::Body>,
+            >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             AuthorizationClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -512,57 +560,83 @@ pub mod authorization_client {
         pub async fn check_access(
             &mut self,
             request: impl tonic::IntoRequest<super::CheckAccessRequest>,
-        ) -> std::result::Result<tonic::Response<super::CheckAccessResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/runtime.iam.v1.Authorization/CheckAccess");
+        ) -> std::result::Result<
+            tonic::Response<super::CheckAccessResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/runtime.iam.v1.Authorization/CheckAccess",
+            );
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "runtime.iam.v1.Authorization",
-                "CheckAccess",
-            ));
+            req.extensions_mut()
+                .insert(GrpcMethod::new("runtime.iam.v1.Authorization", "CheckAccess"));
             self.inner.unary(req, path, codec).await
         }
         pub async fn create_relationships(
             &mut self,
             request: impl tonic::IntoRequest<super::CreateRelationshipsRequest>,
-        ) -> std::result::Result<tonic::Response<super::CreateRelationshipsResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
+        ) -> std::result::Result<
+            tonic::Response<super::CreateRelationshipsResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/runtime.iam.v1.Authorization/CreateRelationships",
             );
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "runtime.iam.v1.Authorization",
-                "CreateRelationships",
-            ));
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "runtime.iam.v1.Authorization",
+                        "CreateRelationships",
+                    ),
+                );
             self.inner.unary(req, path, codec).await
         }
         pub async fn delete_relationships(
             &mut self,
             request: impl tonic::IntoRequest<super::DeleteRelationshipsRequest>,
-        ) -> std::result::Result<tonic::Response<super::DeleteRelationshipsResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteRelationshipsResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/runtime.iam.v1.Authorization/DeleteRelationships",
             );
             let mut req = request.into_request();
-            req.extensions_mut().insert(GrpcMethod::new(
-                "runtime.iam.v1.Authorization",
-                "DeleteRelationships",
-            ));
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new(
+                        "runtime.iam.v1.Authorization",
+                        "DeleteRelationships",
+                    ),
+                );
             self.inner.unary(req, path, codec).await
         }
     }
@@ -574,7 +648,7 @@ pub mod authorization_server {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
     use tonic::codegen::*;
     /// Generated trait containing gRPC methods that should be implemented for use with AuthorizationServer.
@@ -583,15 +657,24 @@ pub mod authorization_server {
         async fn check_access(
             &self,
             request: tonic::Request<super::CheckAccessRequest>,
-        ) -> std::result::Result<tonic::Response<super::CheckAccessResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::CheckAccessResponse>,
+            tonic::Status,
+        >;
         async fn create_relationships(
             &self,
             request: tonic::Request<super::CreateRelationshipsRequest>,
-        ) -> std::result::Result<tonic::Response<super::CreateRelationshipsResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::CreateRelationshipsResponse>,
+            tonic::Status,
+        >;
         async fn delete_relationships(
             &self,
             request: tonic::Request<super::DeleteRelationshipsRequest>,
-        ) -> std::result::Result<tonic::Response<super::DeleteRelationshipsResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteRelationshipsResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct AuthorizationServer<T> {
@@ -614,7 +697,10 @@ pub mod authorization_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -669,11 +755,15 @@ pub mod authorization_server {
                 "/runtime.iam.v1.Authorization/CheckAccess" => {
                     #[allow(non_camel_case_types)]
                     struct CheckAccessSvc<T: Authorization>(pub Arc<T>);
-                    impl<T: Authorization> tonic::server::UnaryService<super::CheckAccessRequest>
-                        for CheckAccessSvc<T>
-                    {
+                    impl<
+                        T: Authorization,
+                    > tonic::server::UnaryService<super::CheckAccessRequest>
+                    for CheckAccessSvc<T> {
                         type Response = super::CheckAccessResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::CheckAccessRequest>,
@@ -692,7 +782,7 @@ pub mod authorization_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = CheckAccessSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -710,19 +800,23 @@ pub mod authorization_server {
                 "/runtime.iam.v1.Authorization/CreateRelationships" => {
                     #[allow(non_camel_case_types)]
                     struct CreateRelationshipsSvc<T: Authorization>(pub Arc<T>);
-                    impl<T: Authorization>
-                        tonic::server::UnaryService<super::CreateRelationshipsRequest>
-                        for CreateRelationshipsSvc<T>
-                    {
+                    impl<
+                        T: Authorization,
+                    > tonic::server::UnaryService<super::CreateRelationshipsRequest>
+                    for CreateRelationshipsSvc<T> {
                         type Response = super::CreateRelationshipsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::CreateRelationshipsRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as Authorization>::create_relationships(&inner, request).await
+                                <T as Authorization>::create_relationships(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -734,7 +828,7 @@ pub mod authorization_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = CreateRelationshipsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -752,19 +846,23 @@ pub mod authorization_server {
                 "/runtime.iam.v1.Authorization/DeleteRelationships" => {
                     #[allow(non_camel_case_types)]
                     struct DeleteRelationshipsSvc<T: Authorization>(pub Arc<T>);
-                    impl<T: Authorization>
-                        tonic::server::UnaryService<super::DeleteRelationshipsRequest>
-                        for DeleteRelationshipsSvc<T>
-                    {
+                    impl<
+                        T: Authorization,
+                    > tonic::server::UnaryService<super::DeleteRelationshipsRequest>
+                    for DeleteRelationshipsSvc<T> {
                         type Response = super::DeleteRelationshipsResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::DeleteRelationshipsRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as Authorization>::delete_relationships(&inner, request).await
+                                <T as Authorization>::delete_relationships(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -776,7 +874,7 @@ pub mod authorization_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = DeleteRelationshipsSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -791,19 +889,25 @@ pub mod authorization_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    let mut response = http::Response::new(tonic::body::Body::default());
-                    let headers = response.headers_mut();
-                    headers.insert(
-                        tonic::Status::GRPC_STATUS,
-                        (tonic::Code::Unimplemented as i32).into(),
-                    );
-                    headers.insert(
-                        http::header::CONTENT_TYPE,
-                        tonic::metadata::GRPC_CONTENT_TYPE,
-                    );
-                    Ok(response)
-                }),
+                _ => {
+                    Box::pin(async move {
+                        let mut response = http::Response::new(
+                            tonic::body::Body::default(),
+                        );
+                        let headers = response.headers_mut();
+                        headers
+                            .insert(
+                                tonic::Status::GRPC_STATUS,
+                                (tonic::Code::Unimplemented as i32).into(),
+                            );
+                        headers
+                            .insert(
+                                http::header::CONTENT_TYPE,
+                                tonic::metadata::GRPC_CONTENT_TYPE,
+                            );
+                        Ok(response)
+                    })
+                }
             }
         }
     }
@@ -825,9 +929,9 @@ pub mod authorization_server {
         const NAME: &'static str = SERVICE_NAME;
     }
 }
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GetAccessTokenRequest {}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GetAccessTokenResponse {
     /// Token is the requested access token returned by the service.
     #[prost(string, tag = "1")]
@@ -840,10 +944,10 @@ pub mod identity_client {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
-    use tonic::codegen::http::Uri;
     use tonic::codegen::*;
+    use tonic::codegen::http::Uri;
     #[derive(Debug, Clone)]
     pub struct IdentityClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -887,8 +991,9 @@ pub mod identity_client {
                     <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<http::Request<tonic::body::Body>>>::Error:
-                Into<StdError> + std::marker::Send + std::marker::Sync,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::Body>,
+            >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             IdentityClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -926,14 +1031,22 @@ pub mod identity_client {
         pub async fn get_access_token(
             &mut self,
             request: impl tonic::IntoRequest<super::GetAccessTokenRequest>,
-        ) -> std::result::Result<tonic::Response<super::GetAccessTokenResponse>, tonic::Status>
-        {
-            self.inner.ready().await.map_err(|e| {
-                tonic::Status::unknown(format!("Service was not ready: {}", e.into()))
-            })?;
-            let codec = tonic::codec::ProstCodec::default();
-            let path =
-                http::uri::PathAndQuery::from_static("/runtime.iam.v1.Identity/GetAccessToken");
+        ) -> std::result::Result<
+            tonic::Response<super::GetAccessTokenResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/runtime.iam.v1.Identity/GetAccessToken",
+            );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(GrpcMethod::new("runtime.iam.v1.Identity", "GetAccessToken"));
@@ -948,7 +1061,7 @@ pub mod identity_server {
         dead_code,
         missing_docs,
         clippy::wildcard_imports,
-        clippy::let_unit_value
+        clippy::let_unit_value,
     )]
     use tonic::codegen::*;
     /// Generated trait containing gRPC methods that should be implemented for use with IdentityServer.
@@ -957,7 +1070,10 @@ pub mod identity_server {
         async fn get_access_token(
             &self,
             request: tonic::Request<super::GetAccessTokenRequest>,
-        ) -> std::result::Result<tonic::Response<super::GetAccessTokenResponse>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::GetAccessTokenResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct IdentityServer<T> {
@@ -980,7 +1096,10 @@ pub mod identity_server {
                 max_encoding_message_size: None,
             }
         }
-        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -1035,11 +1154,15 @@ pub mod identity_server {
                 "/runtime.iam.v1.Identity/GetAccessToken" => {
                     #[allow(non_camel_case_types)]
                     struct GetAccessTokenSvc<T: Identity>(pub Arc<T>);
-                    impl<T: Identity> tonic::server::UnaryService<super::GetAccessTokenRequest>
-                        for GetAccessTokenSvc<T>
-                    {
+                    impl<
+                        T: Identity,
+                    > tonic::server::UnaryService<super::GetAccessTokenRequest>
+                    for GetAccessTokenSvc<T> {
                         type Response = super::GetAccessTokenResponse;
-                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::GetAccessTokenRequest>,
@@ -1058,7 +1181,7 @@ pub mod identity_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = GetAccessTokenSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
+                        let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
                                 accept_compression_encodings,
@@ -1073,19 +1196,25 @@ pub mod identity_server {
                     };
                     Box::pin(fut)
                 }
-                _ => Box::pin(async move {
-                    let mut response = http::Response::new(tonic::body::Body::default());
-                    let headers = response.headers_mut();
-                    headers.insert(
-                        tonic::Status::GRPC_STATUS,
-                        (tonic::Code::Unimplemented as i32).into(),
-                    );
-                    headers.insert(
-                        http::header::CONTENT_TYPE,
-                        tonic::metadata::GRPC_CONTENT_TYPE,
-                    );
-                    Ok(response)
-                }),
+                _ => {
+                    Box::pin(async move {
+                        let mut response = http::Response::new(
+                            tonic::body::Body::default(),
+                        );
+                        let headers = response.headers_mut();
+                        headers
+                            .insert(
+                                tonic::Status::GRPC_STATUS,
+                                (tonic::Code::Unimplemented as i32).into(),
+                            );
+                        headers
+                            .insert(
+                                http::header::CONTENT_TYPE,
+                                tonic::metadata::GRPC_CONTENT_TYPE,
+                            );
+                        Ok(response)
+                    })
+                }
             }
         }
     }
